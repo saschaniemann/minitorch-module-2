@@ -86,7 +86,7 @@ def broadcast_index(
     Returns:
         None
     """
-    for i in range(len(shape)):
+    for i in range(1, len(shape)+1):
         out_index[-i] = 0 if shape[-i] == 1 else big_index[-i]
 
 
@@ -107,10 +107,10 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
     diff = len(shape2) - len(shape1)
     # dim of shape2 > dim of shape1
     if diff > 0:
-        shape1 = tuple([1]) * diff + shape1
+        shape1 = (1,) * diff + shape1
     # dim of shape2 < dim of shape1
     elif diff < 0:
-        shape2 = tuple([1]) * -diff + shape2
+        shape2 = (1,) * -diff + shape2
     
     new_shape = []
     for i in range(len(shape1)):

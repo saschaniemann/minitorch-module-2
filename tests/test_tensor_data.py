@@ -119,6 +119,25 @@ def test_shape_broadcast() -> None:
     c = minitorch.shape_broadcast((2, 5), (5,))
     assert c == (2, 5)
 
+@pytest.mark.task2_2
+def test_shape_broadcast() -> None:
+    c = [0] * 2
+    minitorch.broadcast_index((1,3,5), (3,6,5), (6,5), c)
+    assert tuple(c) == (3, 5)
+
+    minitorch.broadcast_index((2,0,3), (3,6,5), (6,1), c)
+    assert tuple(c) == (0, 0)
+
+    minitorch.broadcast_index((2,2,0,3), (3,2,6,5), (6,5), c)
+    assert tuple(c) == (0, 3)
+
+    c = [0] * 3
+    minitorch.broadcast_index((2,2,0,3), (3,2,6,5), (1,6,5), c)
+    assert tuple(c) == (0, 0, 3)
+
+    c = [0] * 4
+    minitorch.broadcast_index((2,2,0,3), (3,2,6,5), (3,1,1,5), c)
+    assert tuple(c) == (2, 0, 0, 3)
 
 @given(tensor_data())
 def test_string(tensor_data: TensorData) -> None:
