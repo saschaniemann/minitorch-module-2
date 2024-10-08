@@ -377,8 +377,23 @@ def tensor_reduce(fn: Callable[[float, float], float]) -> Any:
         a_strides: Strides,
         reduce_dim: int,
     ) -> None:
-        # TODO: Implement for Task 2.3.
-        raise NotImplementedError("Need to implement for Task 2.3")
+        idx_out: Index = [0]*len(out_shape)
+        idx_a: Index = [0]*len(a_shape)
+        for i in range(len(out)):
+            # get big index
+            to_index(i, out_shape, idx_out)
+            #calculate reduction value (starting with val_0 = a_0, 
+            #then for j=1,..,n-1: val = fn(val, a_j))
+            idx_a = idx_out
+            pos_a = index_to_position(idx_a, a_strides)
+            val = a_storage[pos_a]
+            for j in range(1, a_shape[reduce_dim]):
+                idx_a[reduce_dim] = j
+                a_pos_j = index_to_position(idx_a, a_strides)
+                val = fn(val, a_storage[a_pos_j])
+            # set reduction value
+            out_pos = index_to_position(idx_out, out_strides)
+            out[out_pos] = val
 
     return _reduce
 
