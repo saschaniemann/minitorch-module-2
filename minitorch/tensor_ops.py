@@ -268,18 +268,18 @@ def tensor_map(fn: Callable[[float], float]) -> Any:
         in_shape: Shape,
         in_strides: Strides,
     ) -> None:
-        idxOut: Index = [0]*len(out_shape)
-        idxIn: Index = [0]*len(in_shape)
+        idx_out: Index = [0]*len(out_shape)
+        idx_in: Index = [0]*len(in_shape)
         for i in range(len(out)):
             # get big index
-            to_index(i, out_shape, idxOut)
+            to_index(i, out_shape, idx_out)
             # get small index
-            broadcast_index(big_index=idxOut, big_shape=out_shape, shape=in_shape, out_index=idxIn)
+            broadcast_index(big_index=idx_out, big_shape=out_shape, shape=in_shape, out_index=idx_in)
             # calc pos
-            outPos = index_to_position(idxOut, out_strides)
-            inPos = index_to_position(idxIn, in_strides)
+            out_pos = index_to_position(idx_out, out_strides)
+            in_pos = index_to_position(idx_in, in_strides)
             # map
-            out[outPos] = fn(in_storage[inPos])
+            out[out_pos] = fn(in_storage[in_pos])
 
     return _map
 
