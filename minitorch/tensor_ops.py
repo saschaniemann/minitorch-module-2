@@ -268,8 +268,18 @@ def tensor_map(fn: Callable[[float], float]) -> Any:
         in_shape: Shape,
         in_strides: Strides,
     ) -> None:
-        # TODO: Implement for Task 2.3.
-        raise NotImplementedError("Need to implement for Task 2.3")
+        idxOut: Index = [0]*len(out_shape)
+        idxIn: Index = [0]*len(in_shape)
+        for i in range(len(out)):
+            # get big index
+            to_index(i, out_shape, idxOut)
+            # get small index
+            broadcast_index(big_index=idxOut, big_shape=out_shape, shape=in_shape, out_index=idxIn)
+            # calc pos
+            outPos = index_to_position(idxOut, out_strides)
+            inPos = index_to_position(idxIn, in_strides)
+            # map
+            out[outPos] = fn(in_storage[inPos])
 
     return _map
 
