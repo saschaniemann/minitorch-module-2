@@ -328,8 +328,21 @@ def tensor_zip(fn: Callable[[float, float], float]) -> Any:
         b_shape: Shape,
         b_strides: Strides,
     ) -> None:
-        # TODO: Implement for Task 2.3.
-        raise NotImplementedError("Need to implement for Task 2.3")
+        idx_out: Index = [0]*len(out_shape)
+        idx_a: Index = [0]*len(a_shape)
+        idx_b: Index = [0]*len(b_shape)
+        for i in range(len(out)):
+            # get big index
+            to_index(i, out_shape, idx_out)
+            # get small index
+            broadcast_index(big_index=idx_out, big_shape=out_shape, shape=a_shape, out_index=idx_a)
+            broadcast_index(big_index=idx_out, big_shape=out_shape, shape=b_shape, out_index=idx_b)
+            # calc pos
+            out_pos = index_to_position(idx_out, out_strides)
+            a_pos = index_to_position(idx_a, a_strides)
+            b_pos = index_to_position(idx_b, b_strides)
+            # zip
+            out[out_pos] = fn(a_storage[a_pos], b_storage[b_pos])
 
     return _zip
 
