@@ -392,6 +392,7 @@ def tensor_reduce(fn: Callable[[float, float], float]) -> Any:
                 a_pos_j = index_to_position(idx_a, a_strides)
                 val = fn(val, a_storage[a_pos_j])
             # set reduction value
+            to_index(i, out_shape, idx_out)
             out_pos = index_to_position(idx_out, out_strides)
             out[out_pos] = val
 
