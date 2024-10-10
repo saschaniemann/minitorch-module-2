@@ -14,7 +14,6 @@ class Network(minitorch.Module):
         self.layer1 = Linear(2, hidden_layers)
         self.layer2 = Linear(hidden_layers, hidden_layers)
         self.layer3 = Linear(hidden_layers, 1)
-        
 
     def forward(self, x):
         middle = [h.relu() for h in self.layer1.forward(x)]

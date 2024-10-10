@@ -16,6 +16,7 @@ MAX_DIMS = 32
 
 class IndexingError(RuntimeError):
     "Exception raised for indexing errors."
+
     pass
 
 
@@ -43,9 +44,9 @@ def index_to_position(index: Index, strides: Strides) -> int:
         Position in storage
     """
     idx = 0
-    for (i, s) in zip(index, strides):
-        idx += i*s
-    return idx 
+    for i, s in zip(index, strides):
+        idx += i * s
+    return idx
 
 
 def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
@@ -86,7 +87,7 @@ def broadcast_index(
     Returns:
         None
     """
-    for i in range(1, len(shape)+1):
+    for i in range(1, len(shape) + 1):
         out_index[-i] = 0 if shape[-i] == 1 else big_index[-i]
 
 
@@ -111,7 +112,7 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
     # dim of shape2 < dim of shape1
     elif diff < 0:
         shape2 = (1,) * -diff + shape2
-    
+
     new_shape = []
     for i in range(len(shape1)):
         if shape1[i] == shape2[i] or shape2[i] == 1:
@@ -251,23 +252,23 @@ class TensorData:
     def to_string(self) -> str:
         s = ""
         for index in self.indices():
-            l = ""
+            ls = ""
             for i in range(len(index) - 1, -1, -1):
                 if index[i] == 0:
-                    l = "\n%s[" % ("\t" * i) + l
+                    ls = "\n%s[" % ("\t" * i) + ls
                 else:
                     break
-            s += l
+            s += ls
             v = self.get(index)
             s += f"{v:3.2f}"
-            l = ""
+            ls = ""
             for i in range(len(index) - 1, -1, -1):
                 if index[i] == self.shape[i] - 1:
-                    l += "]"
+                    ls += "]"
                 else:
                     break
-            if l:
-                s += l
+            if ls:
+                s += ls
             else:
                 s += " "
         return s

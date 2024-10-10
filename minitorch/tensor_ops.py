@@ -2,12 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable, Optional, Type
 
-import numpy as np
 from typing_extensions import Protocol
 
 from . import operators
 from .tensor_data import (
-    MAX_DIMS,
     broadcast_index,
     index_to_position,
     shape_broadcast,
@@ -20,8 +18,7 @@ if TYPE_CHECKING:
 
 
 class MapProto(Protocol):
-    def __call__(self, x: Tensor, out: Optional[Tensor] = ..., /) -> Tensor:
-        ...
+    def __call__(self, x: Tensor, out: Optional[Tensor] = ..., /) -> Tensor: ...
 
 
 class TensorOps:
@@ -136,7 +133,7 @@ class SimpleOps(TensorOps):
 
     @staticmethod
     def zip(
-        fn: Callable[[float, float], float]
+        fn: Callable[[float, float], float],
     ) -> Callable[["Tensor", "Tensor"], "Tensor"]:
         """
         Higher-order tensor zip function ::
@@ -268,13 +265,15 @@ def tensor_map(fn: Callable[[float], float]) -> Any:
         in_shape: Shape,
         in_strides: Strides,
     ) -> None:
-        idx_out: Index = [0]*len(out_shape)
-        idx_in: Index = [0]*len(in_shape)
+        idx_out: Index = [0] * len(out_shape)
+        idx_in: Index = [0] * len(in_shape)
         for i in range(len(out)):
             # get big index
             to_index(i, out_shape, idx_out)
             # get small index
-            broadcast_index(big_index=idx_out, big_shape=out_shape, shape=in_shape, out_index=idx_in)
+            broadcast_index(
+                big_index=idx_out, big_shape=out_shape, shape=in_shape, out_index=idx_in
+            )
             # calc pos
             out_pos = index_to_position(idx_out, out_strides)
             in_pos = index_to_position(idx_in, in_strides)
@@ -328,15 +327,19 @@ def tensor_zip(fn: Callable[[float, float], float]) -> Any:
         b_shape: Shape,
         b_strides: Strides,
     ) -> None:
-        idx_out: Index = [0]*len(out_shape)
-        idx_a: Index = [0]*len(a_shape)
-        idx_b: Index = [0]*len(b_shape)
+        idx_out: Index = [0] * len(out_shape)
+        idx_a: Index = [0] * len(a_shape)
+        idx_b: Index = [0] * len(b_shape)
         for i in range(len(out)):
             # get big index
             to_index(i, out_shape, idx_out)
             # get small index
-            broadcast_index(big_index=idx_out, big_shape=out_shape, shape=a_shape, out_index=idx_a)
-            broadcast_index(big_index=idx_out, big_shape=out_shape, shape=b_shape, out_index=idx_b)
+            broadcast_index(
+                big_index=idx_out, big_shape=out_shape, shape=a_shape, out_index=idx_a
+            )
+            broadcast_index(
+                big_index=idx_out, big_shape=out_shape, shape=b_shape, out_index=idx_b
+            )
             # calc pos
             out_pos = index_to_position(idx_out, out_strides)
             a_pos = index_to_position(idx_a, a_strides)
@@ -377,13 +380,13 @@ def tensor_reduce(fn: Callable[[float, float], float]) -> Any:
         a_strides: Strides,
         reduce_dim: int,
     ) -> None:
-        idx_out: Index = [0]*len(out_shape)
-        idx_a: Index = [0]*len(a_shape)
+        idx_out: Index = [0] * len(out_shape)
+        idx_a: Index = [0] * len(a_shape)
         for i in range(len(out)):
             # get big index
             to_index(i, out_shape, idx_out)
-            #calculate reduction value (starting with val_0 = a_0, 
-            #then for j=1,..,n-1: val = fn(val, a_j))
+            # calculate reduction value (starting with val_0 = a_0,
+            # then for j=1,..,n-1: val = fn(val, a_j))
             idx_a = idx_out
             pos_a = index_to_position(idx_a, a_strides)
             val = a_storage[pos_a]
