@@ -146,7 +146,6 @@ class Log(Function):
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
-        print(ctx)
         (t1,) = ctx.saved_values
         return grad_output.f.log_back_zip(t1, grad_output)
 
